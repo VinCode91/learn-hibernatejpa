@@ -1,7 +1,12 @@
 package com.baeldung.lhj.persistence.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class Worker {
 
+    @Id
     private Long id;
 
     private String email;

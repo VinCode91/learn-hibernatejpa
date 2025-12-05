@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.1">
+    <persistence-unit name="LHJ">
+        <!-- we'll add JPA/Hibernate configuration here -->
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <!-- Define the classes -->
+        <class>com.baeldung.lhj.persistence.model.Worker</class>
+
+        <properties>
+            <!-- Provider agnostic properties -->
+            <!-- <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE"/>
+            <property name="jakarta.persistence.jdbc.user" value="sa"/> -->
+
+
+            <!-- specify DB connection driver for JDBC and other params -->
+            <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
+            <property name="hibernate.connection.url" value="jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE"/>
+            <property name="hibernate.connection.username" value="sa"/>
+            <!-- Manage schema generation -->
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+            <!-- Enable SQL logging -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+
+            <!-- Hibernate specific property unavailable in JPA -->
+            <property name="hibernate.connection.pool_size" value="5"/>
+        </properties>
+    </persistence-unit>
+</persistence>

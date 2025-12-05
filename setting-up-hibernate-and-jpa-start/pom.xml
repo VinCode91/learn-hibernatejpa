@@ -11,6 +11,17 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+        </dependency>
+
         <!-- test -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -48,6 +59,13 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.hibernate.orm</groupId>
+                <artifactId>hibernate-platform</artifactId>
+                <version>${hibernate.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
                 <version>${junit-jupiter.version}</version>
@@ -62,6 +80,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>21</java.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>
+        <hibernate.version>7.1.11.Final</hibernate.version>
+        <h2.version>2.4.240</h2.version>
 
         <junit-jupiter.version>5.11.0</junit-jupiter.version>
         <logback.version>1.5.7</logback.version>
