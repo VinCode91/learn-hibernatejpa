@@ -1,12 +1,22 @@
 package com.baeldung.lhj.persistence.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.UUID;
 
+@Entity
+@Table(name = "tasks")
 public class Task {
 
+    @Id
     private Long id;
 
+    @Column(name = "uuid", unique = true, nullable = false, updatable = false)
     private String uuid = UUID.randomUUID()
         .toString();
 
@@ -79,5 +89,20 @@ public class Task {
     @Override
     public String toString() {
         return "Task [id=" + id + ", name=" + name + ", description=" + description + ", dueDate=" + dueDate + ", status=" + status + "]";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof Task other))
+            return false;
+
+        return Objects.equals(getUuid(), other.getUuid());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUuid());
     }
 }

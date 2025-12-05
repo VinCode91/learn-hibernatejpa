@@ -2,8 +2,12 @@ package com.baeldung.lhj.persistence.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+import java.util.Objects;
 
 @Entity
+@Table(name = "workers")
 public class Worker {
 
     @Id
@@ -59,5 +63,20 @@ public class Worker {
     @Override
     public String toString() {
         return "Worker [id=" + id + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName + "]";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof Worker other))
+            return false;
+
+        return Objects.equals(getEmail(), other.getEmail());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getEmail());
     }
 }
