@@ -1,15 +1,11 @@
 package com.baeldung.lhj.persistence.model;
 
-import java.time.LocalDate;
+import java.time.*;
+import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class Task {
@@ -31,7 +27,24 @@ public class Task {
     @Column(name = "due_date")
     private LocalDate dueDate;
 
+    @Column(name = "created_date")
+    private LocalDateTime createdOn = LocalDateTime.now();
+
+    @Column(name = "start_time")
+    private LocalTime startTime = LocalTime.now();
+
+    @Column(name = "duration")
+    private Duration duration = Duration.ofHours(2);
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "finish_date")
+    private Date finishedAt;
+
+    @Column(name = "created_at")
+    private Instant createdAt = Instant.now(); // time in UTC
+
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private TaskStatus status;
 
     @ManyToOne(optional = false)
@@ -114,6 +127,42 @@ public class Task {
 
     public String getUuid() {
         return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public LocalDateTime getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(LocalDateTime createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override
