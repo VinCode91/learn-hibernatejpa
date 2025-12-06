@@ -1,8 +1,9 @@
 package com.baeldung.lhj.persistence.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Worker {
@@ -18,14 +19,23 @@ public class Worker {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "address_street")
-    private String addressStreet;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "street", column = @Column(name = "address_street")),
+            @AttributeOverride(name = "city", column = @Column(name = "address_city")),
+            @AttributeOverride(name = "zipCode", column = @Column(name = "address_zipCode"))
+    })
+    private Address address;
 
-    @Column(name = "address_city")
-    private String addressCity;
+    @OneToOne
+    @JoinColumn(name = "performance_id", referencedColumnName = "id")
+    private WorkerPerformance performance;
 
-    @Column(name = "address_zip_code")
-    private String addressZipCode;
+    @OneToMany(mappedBy = "assignee")
+    private Set<Task> assignedTasks = new HashSet<>();
+
+    @OneToMany(mappedBy = "worker")
+    private Set<WorkerSkill> workerSkills = new HashSet<>();
 
     public Worker(String email, String firstName, String lastName) {
         this.email = email;
@@ -68,28 +78,36 @@ public class Worker {
         this.lastName = lastName;
     }
 
-    public String getAddressStreet() {
-        return addressStreet;
+    public WorkerPerformance getPerformance() {
+        return performance;
     }
 
-    public void setAddressStreet(String addressStreet) {
-        this.addressStreet = addressStreet;
+    public void setPerformance(WorkerPerformance performance) {
+        this.performance = performance;
     }
 
-    public String getAddressCity() {
-        return addressCity;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setAddressCity(String addressCity) {
-        this.addressCity = addressCity;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
-    public String getAddressZipCode() {
-        return addressZipCode;
+    public Set<Task> getAssignedTasks() {
+        return assignedTasks;
     }
 
-    public void setAddressZipCode(String addressZipCode) {
-        this.addressZipCode = addressZipCode;
+    public void setAssignedTasks(Set<Task> assignedTasks) {
+        this.assignedTasks = assignedTasks;
+    }
+
+    public Set<WorkerSkill> getWorkerSkills() {
+        return workerSkills;
+    }
+
+    public void setWorkerSkills(Set<WorkerSkill> workerSkills) {
+        this.workerSkills = workerSkills;
     }
 
     @Override
@@ -99,9 +117,9 @@ public class Worker {
             ", email=" + email +
             ", firstName=" + firstName +
             ", lastName=" + lastName +
-            ", addressStreet=" + addressStreet +
-            ", addressCity=" + addressCity +
-            ", addressZipCode=" + addressZipCode +
+            ", addressStreet=" + address.getStreet() +
+            ", addressCity=" + address.getCity() +
+            ", addressZipCode=" + address.getZipCode() +
             "]";
     }
 }

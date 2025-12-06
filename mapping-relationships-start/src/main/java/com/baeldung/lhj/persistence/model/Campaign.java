@@ -2,6 +2,10 @@ package com.baeldung.lhj.persistence.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Campaign {
@@ -14,6 +18,9 @@ public class Campaign {
     private String name;
 
     private String description;
+
+    @OneToMany(mappedBy = "campaign")
+    private Set<Task> tasks = new HashSet<>();
 
     public Campaign(String code, String name, String description) {
         this.code = code;
@@ -54,6 +61,14 @@ public class Campaign {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
     }
 
     @Override

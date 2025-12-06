@@ -2,6 +2,10 @@ package com.baeldung.lhj.persistence.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Label {
@@ -10,6 +14,9 @@ public class Label {
     private Long id;
 
     private String name;
+
+    @ManyToMany(mappedBy = "labels")
+    private Set<Task> tasks = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -29,7 +36,7 @@ public class Label {
 
     @Override
     public String toString() {
-        return "Worker [id=" + id + ", name=" + name + "]";
+        return "Label [id=" + id + ", name=" + name + "]";
     }
 
 }

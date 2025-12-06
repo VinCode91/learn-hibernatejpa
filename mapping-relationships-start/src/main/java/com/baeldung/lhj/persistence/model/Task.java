@@ -1,10 +1,10 @@
 package com.baeldung.lhj.persistence.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Task {
@@ -20,6 +20,22 @@ public class Task {
     private LocalDate dueDate;
 
     private TaskStatus status;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "campaign_id")
+    private Campaign campaign;
+
+    @ManyToOne
+    @JoinColumn(name = "worker_id")
+    private Worker assignee;
+
+    @ManyToMany
+    @JoinTable(
+            name = "Task_Label",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "label_id")
+    )
+    private Set<Label> labels = new HashSet<>();
 
     public Task() {
     }

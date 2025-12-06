@@ -3,6 +3,10 @@ package com.baeldung.lhj.persistence.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Skill {
@@ -11,6 +15,9 @@ public class Skill {
     private Long id;
 
     private String name;
+
+    @OneToMany(mappedBy = "skill")
+    private Set<WorkerSkill> workerSkills = new HashSet<>();
 
     public Long getId() {
         return id;

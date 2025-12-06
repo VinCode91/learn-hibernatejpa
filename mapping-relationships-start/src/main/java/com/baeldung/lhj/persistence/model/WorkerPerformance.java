@@ -3,6 +3,7 @@ package com.baeldung.lhj.persistence.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class WorkerPerformance {
@@ -17,6 +18,9 @@ public class WorkerPerformance {
 
     @Column(name = "completion_rate")
     private Double completionRate;
+
+    @OneToOne(mappedBy = "performance")
+    private Worker worker;
 
     public Long getId() {
         return id;
