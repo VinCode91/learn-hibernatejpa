@@ -1,16 +1,15 @@
 package com.baeldung.lhj.persistence.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
+// A drawback of single table inheritance type is the inability to enforce constraints
+// on subclass specific columns like not null even if business logic requires it
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "worker_type", columnDefinition = "varchar(80)")
 public abstract class Worker {
 
     @Id

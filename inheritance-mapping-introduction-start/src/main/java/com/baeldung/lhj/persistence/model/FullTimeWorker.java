@@ -1,8 +1,10 @@
 package com.baeldung.lhj.persistence.model;
 
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
 @Entity
+@DiscriminatorValue("FULL_TIME")
 public class FullTimeWorker extends Worker {
 
     private Double salary;
