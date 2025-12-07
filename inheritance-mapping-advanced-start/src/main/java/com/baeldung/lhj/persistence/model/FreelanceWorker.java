@@ -1,10 +1,12 @@
 package com.baeldung.lhj.persistence.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
 @Entity
 public class FreelanceWorker extends Worker {
 
+    @Column(name = "hourly_rate", nullable = false)
     private Double hourlyRate;
 
     public FreelanceWorker() {
