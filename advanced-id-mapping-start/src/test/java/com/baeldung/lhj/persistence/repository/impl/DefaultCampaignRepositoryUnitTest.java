@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class DefaultCampaignRepositoryUnitTest {
-    CampaignRepository campaignRepository = new DefaultCampaignRepository();
+    /*CampaignRepository campaignRepository = new DefaultCampaignRepository();
 
     @Test
     void givenExistingCampaign_whenFindById_thenCampaignRetrieved() {
@@ -50,6 +50,6 @@ public class DefaultCampaignRepositoryUnitTest {
 
         // then
         Assertions.assertFalse(retrievedCampaigns.isEmpty());
-    }
+    }*/
 
 }

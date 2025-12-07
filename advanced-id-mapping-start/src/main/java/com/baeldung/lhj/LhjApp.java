@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 
 public class LhjApp {
 
+    public static final int SHARED_SEQ_INCREMENT = 10;
+
     public static void main(final String... args) {
         EntityManagerFactory emf = null;
         try {

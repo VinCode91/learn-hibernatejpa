@@ -1,18 +1,45 @@
 package com.baeldung.lhj.persistence.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.baeldung.lhj.LhjApp;
+import jakarta.persistence.*;
+import org.hibernate.annotations.NaturalId;
+
+import java.util.UUID;
 
 @Entity
 public class Campaign {
 
+    // We should be cautious when using IDENTITY GenerationType in high-throughput applications,
+    // as Hibernate cannot batch-insert entities with this strategy – it must execute
+    // each insert individually to retrieve the generated ID from the database
+
+    // UUIDs consume relatively more space than numeric IDs (typically 128 bits vs. 64 bits for a long)
+    // and can impact database/query performance because of their randomness
+
+    // SEQUENCE separates ID generation from row insertion. Using sequences provides better support for batch inserts
+    // since Hibernate can pre-allocate IDs using the defined sequence.
+    // Hence, the SEQUENCE strategy proves handy for high-throughput applications where sequences offer performance benefits
+
+    // With Table strategy, Hibernate uses a separate table, id_generator, to track and increment ID values using the
+    // campaign_id value for the gen_name column.
+    // Although this strategy seems flexible and portable, performance may degrade under high insert rates due to
+    // frequent reads and writes to the id_generator table.
+    // So, we can conclude that it’s more portable across databases but comes with a performance cost due to the
+    // additional lookup
     @Id
-    @GeneratedValue
+    @TableGenerator(
+            name = "campaign_gen",
+            table = "id_generator",
+            pkColumnName = "gen_name",
+            valueColumnName = "gen_value",
+            pkColumnValue = "campaign_id",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "campaign_gen")
     @Column(name = "id")
     private Long id;
 
+    @NaturalId
     @Column(name = "code", unique = true, nullable = false, updatable = false)
     private String code;
 

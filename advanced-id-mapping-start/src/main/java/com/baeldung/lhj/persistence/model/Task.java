@@ -3,16 +3,20 @@ package com.baeldung.lhj.persistence.model;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.baeldung.lhj.LhjApp;
+import jakarta.persistence.*;
 
 @Entity
 public class Task {
 
     @Id
-    @GeneratedValue
+    @SequenceGenerator(
+            name = "shared_seq", // name's scope limited to class
+            sequenceName = "shared_sequence",
+            allocationSize = LhjApp.SHARED_SEQ_INCREMENT
+    )
+
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "shared_seq")
     @Column(name = "id")
     private Long id;
 

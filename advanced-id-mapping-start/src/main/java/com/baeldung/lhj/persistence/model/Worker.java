@@ -1,18 +1,26 @@
 package com.baeldung.lhj.persistence.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.baeldung.lhj.LhjApp;
+import jakarta.persistence.*;
+import org.hibernate.annotations.NaturalId;
 
 @Entity
 public class Worker {
 
     @Id
-    @GeneratedValue
+    @TableGenerator(
+            name = "campaign_gen", // name's scope limited to class even if identic to name defined for Campaign class
+            table = "id_generator", // Can use same table for different id generation with distinct pkColumnValue
+            pkColumnName = "gen_name",
+            valueColumnName = "gen_value",
+            pkColumnValue = "worker_id",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "campaign_gen")
     @Column(name = "id")
     private Long id;
 
+    @NaturalId
     @Column(name = "email", unique = true, nullable = false, updatable = false)
     private String email;
 
