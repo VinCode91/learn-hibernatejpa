@@ -34,17 +34,33 @@ public class DefaultCampaignRepository implements CampaignRepository {
 
     @Override
     public List<Campaign> findAll() {
-        return List.of();
+        try (EntityManager entityManager = JpaUtil.getEntityManager()) {
+            return entityManager
+                    .createQuery("SELECT c FROM Campaign c", Campaign.class)
+                    .getResultList();
+        }
     }
 
     @Override
     public Optional<Campaign> findByCodeAndName(String code, String name) {
-        return Optional.empty();
+        try (EntityManager entityManager = JpaUtil.getEntityManager()) {
+            return Optional.of(entityManager
+                    .createQuery("SELECT c FROM Campaign c WHERE c.code = ?1 and c.name = ?2", Campaign.class)
+                    .setParameter(1, code).setParameter(2, name).getSingleResult()
+            );
+        }
     }
 
     @Override
     public int deleteCampaignsWithoutTasks() {
-        return 0;
+        try (EntityManager entityManager = JpaUtil.getEntityManager()) {
+            entityManager.getTransaction().begin();
+            int deleteCount = entityManager
+                    .createQuery("delete FROM Campaign c where c.tasks IS EMPTY")
+                    .executeUpdate();
+            entityManager.getTransaction().commit();
+            return deleteCount;
+        }
     }
 
 }
