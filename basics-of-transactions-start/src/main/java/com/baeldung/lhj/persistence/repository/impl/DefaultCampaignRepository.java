@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.baeldung.lhj.persistence.model.Task;
+import com.baeldung.lhj.persistence.util.TransactionUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
@@ -48,21 +49,37 @@ public class DefaultCampaignRepository implements CampaignRepository {
 
     @Override
     public void createCampaignWithTasks(Campaign campaign, List<Task> tasks) {
+        try (EntityManager em = JpaUtil.getEntityManager()) {
+            new TransactionUtil(em).inTransaction(entityManager -> {
+                entityManager.persist(campaign);
+                for (Task task : tasks) {
+                    task.setCampaign(campaign);
+                    entityManager.persist(task);
+                }
+            });
+        }
+    }
+
+    /*@Override
+    public void createCampaignWithTasks(Campaign campaign, List<Task> tasks) {
         try (EntityManager entityManager = JpaUtil.getEntityManager()) {
             EntityTransaction entityTransaction = entityManager.getTransaction();
 
-            entityTransaction.begin();
-            entityManager.persist(campaign);
-            entityTransaction.commit();
-
-            for (Task task : tasks) {
-                task.setCampaign(campaign);
-
+            try {
                 entityTransaction.begin();
-                entityManager.persist(task);
+                entityManager.persist(campaign);
+                for (Task task : tasks) {
+                    task.setCampaign(campaign);
+                    entityManager.persist(task);
+                }
                 entityTransaction.commit();
+            } catch (RuntimeException e) {
+                if (entityTransaction.isActive()) {
+                    entityTransaction.rollback();
+                }
+                throw e;
             }
         }
-    }
+    }*/
 
 }

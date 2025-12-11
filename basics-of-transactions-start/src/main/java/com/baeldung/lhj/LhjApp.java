@@ -7,6 +7,7 @@ import com.baeldung.lhj.persistence.repository.CampaignRepository;
 import com.baeldung.lhj.persistence.repository.impl.DefaultCampaignRepository;
 import com.baeldung.lhj.persistence.util.JpaUtil;
 
+import org.hibernate.PropertyValueException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +27,16 @@ public class LhjApp {
             Task task2 = new Task("Task 2", "Task 2 Description", LocalDate.now(), null, TaskStatus.TO_DO, null);
 
             campaignRepository.createCampaignWithTasks(campaign1, List.of(task1, task2));
+            logger.info("{} campaign(s) present in the database", campaignRepository.findAll().size());
+
+            Campaign campaign2 = new Campaign("Campaign 2", "Campaign 2 Name", "Campaign 2 Description");
+            Task taskWithNoName = new Task(null, "Task Description", LocalDate.now(), null, TaskStatus.TO_DO, null);
+
+            try {
+                campaignRepository.createCampaignWithTasks(campaign2, List.of(taskWithNoName));
+            } catch (PropertyValueException exception) {
+                logger.error("{}", exception.getMessage());
+            }
             logger.info("{} campaign(s) present in the database", campaignRepository.findAll().size());
         } finally {
             JpaUtil.closeEntityManagerFactory();
