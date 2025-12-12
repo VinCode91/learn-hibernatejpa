@@ -1,12 +1,16 @@
 package com.baeldung.lhj;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.persistence.EntityManager;
 
+import org.hibernate.LazyInitializationException;
 import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.baeldung.lhj.extension.CloseResourcesExtension;
@@ -22,6 +26,10 @@ import com.baeldung.lhj.persistence.repository.impl.DefaultTaskRepository;
 import com.baeldung.lhj.persistence.repository.impl.DefaultWorkerRepository;
 import com.baeldung.lhj.persistence.util.JpaUtil;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@Disabled
 @ExtendWith(CloseResourcesExtension.class)
 class LazyFetchUnitTest {
     private EntityManager em;
@@ -77,4 +85,47 @@ class LazyFetchUnitTest {
             taskRepository.save(newTask);
         }
     }
+
+    @Test
+    void whenAccessingTasksLazily_thenTwoSelectsExecute() {
+        // when
+        Campaign campaign = em.find(Campaign.class, 1L); // first SELECT (campaign)
+        campaign.getTasks().size(); // second SELECT (tasks)
+
+        // then
+        assertEquals(2, stats.getPrepareStatementCount());
+    }
+
+
+    @Test
+    void whenAccessingTasksLazilyOutsidePersistenceContext_throwsLazyInitializationException() {
+        Campaign campaign;
+        try (EntityManager entityManager = JpaUtil.getEntityManager()) {
+            // when
+            campaign = entityManager.find(Campaign.class, 12L); // first SELECT (campaign)
+        }
+
+        // then
+        assertThrows(LazyInitializationException.class, () -> campaign.getTasks().size());
+    }
+
+    @Test
+    public void whenAccessingTasksLazily_thenNPlus1ProblemOccurs() {
+        // when
+        // Using JOIN FETCH forces fetch
+        //String selectQuery = "SELECT c FROM Campaign c JOIN FETCH c.tasks t JOIN FETCH t.assignee";
+
+        String selectQuery = "SELECT c FROM Campaign c";
+
+        List<Campaign> campaigns = em.createQuery(selectQuery, Campaign.class)
+                .getResultList(); // first SELECT (campaigns)
+
+        for (Campaign c : campaigns) {
+            c.getTasks().size(); // each line emits a SELECT tasks where campaign_id = ?
+        }
+
+        // then
+        assertEquals(11, stats.getPrepareStatementCount());
+    }
+
 }

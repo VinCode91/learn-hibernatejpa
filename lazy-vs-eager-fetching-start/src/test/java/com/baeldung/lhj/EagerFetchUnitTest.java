@@ -7,6 +7,7 @@ import jakarta.persistence.EntityManager;
 import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.baeldung.lhj.extension.CloseResourcesExtension;
@@ -21,6 +22,9 @@ import com.baeldung.lhj.persistence.repository.impl.DefaultCampaignRepository;
 import com.baeldung.lhj.persistence.repository.impl.DefaultTaskRepository;
 import com.baeldung.lhj.persistence.repository.impl.DefaultWorkerRepository;
 import com.baeldung.lhj.persistence.util.JpaUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ExtendWith(CloseResourcesExtension.class)
 class EagerFetchUnitTest {
@@ -80,4 +84,15 @@ class EagerFetchUnitTest {
             taskRepository.save(task);
         }
     }
+
+    @Test
+    void whenMappingIsEager_thenSingleSelectExecutes() {
+        // because tasks() is EAGER, this call fetches campaign + tasks in one round‑trip
+        Campaign campaign = em.find(Campaign.class, 1L);
+        assertFalse(campaign.getTasks().isEmpty());
+
+        // one SQL statement – either a join or an immediate secondary select
+        assertEquals(1, stats.getPrepareStatementCount());
+    }
+
 }
